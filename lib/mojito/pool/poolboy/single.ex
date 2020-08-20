@@ -112,7 +112,7 @@ defmodule Mojito.Pool.Poolboy.Single do
       timeout = valid_request.opts[:timeout] || Config.timeout()
 
       case do_request(pool, valid_request) do
-        {:error, %Mojito.Error{reason: %{reason: :closed}}} ->
+        {:error, %Mojito.Error{reason: %{reason: r}}} when r in [:closed, :closed_for_writing] ->
           ## Retry connection-closed errors as many times as we can
           new_timeout = calc_new_timeout(timeout, start_time)
 
